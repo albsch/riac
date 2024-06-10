@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Magnifying Glass Prototype</title>
+
+    <meta charset="utf-8"/>
+
+</head>
+
+<body>
+    Static prototype not implemented.
+
+    <div class="magnifying-glass" style="display: none" th:fragment="magnifying-glass">
+        <div id="loading-result"></div>
+        <div id="error-result">Result does not exist.</div>
+
+        <div id="showing-result">
+            <div id="single-result">
+                &#8466;(A) &sube; 	&#8466;(B)
+            </div>
+            <hr/>
+            <div id="automaton-a-info">
+                <div id="automaton-a-desc">Automaton A</div>
+                <div id="automaton-a-name">A</div>
+                <div id="automaton-a-states">#states: 33300</div>
+                <div id="automaton-a-final-states">#final states: 24</div>
+                <div id="automaton-a-alphabet">size of alhpabet: 200</div>
+            </div>
+            <hr/>
+            <div id="automaton-b-info">
+                <div id="automaton-b-desc">Automaton B</div>
+                <div id="automaton-b-name">A: arlerjlkejrlwekrj_rwerinc.vtf</div>
+                <div id="automaton-b-states">#states: 33300</div>
+                <div id="automaton-b-final-states">#final states: 24</div>
+                <div id="automaton-b-alphabet">size of alhpabet: 200</div>
+            </div>
+            <hr/>
+            <div id="result-info">
+                <div id="result-convert">100 ms</div>
+                <div id="result-solved">1000 ms</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

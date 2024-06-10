@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<!--/*@thymesVar id="result" type="link.server1.ag.concurrency.riac.fragment.SingleBenchmarkResult"*/-->
+<table border="1">
+    <tr>
+        <th:block th:fragment="cell(result)">
+
+            <!--/*Left-side file name header*/-->
+            <th th:if="${result.rowHeader}">
+                <th:block th:text="${result.automatonA}">Left-hand automaton file</th:block>
+            </th>
+
+
+            <td th:id="'td-cell-'+${result.id}" th:if="${!result.rowHeader}">
+                <span
+                        th:attr="data-row=${result.row},data-col=${result.column},
+                                 data-automaton-a=${result.automatonA},data-automaton-b=${result.automatonB}"
+                        data-toggle="bench-cell"
+                        th:id="${result.automatonA}+'__'+${result.automatonB}"
+                        class="resultcell"
+                        style="display: inline-grid"
+                        th:classappend="'cell'
+                + ' '
+                +(${result.severity eq 0} ? easy : '')
+                +(${result.included == null} ? timeout : '')
+                +(${result.severity eq 1} ? medium : '')
+                +(${result.severity eq 2} ? hard : '')">
+                    <span>
+                        <span th:if="${result.error}" class="glyphicon glyphicon-flash" style="color: #ff00a3;"></span>
+                        <span th:if="${result.timeout}" class="glyphicon glyphicon-question-sign" style="color: #fffb00;"></span>
+                        <span th:if="${result.memory}" class="glyphicon glyphicon-fire" style="color: #fffb00;"></span>
+                        <th:block th:if="${result.included != null}">
+                            <span th:if="${result.included}" class="glyphicon glyphicon-ok" style="color: #ffffffd1;"></span>
+                            <span th:if="${!result.included}" class="glyphicon glyphicon-remove" style="color: orangered"></span>
+                        </th:block>
+                        <span th:if="${(result.memory == null)
+                                     and (result.timeout == null)
+                                     and (result.error == null)
+                                     and (result.included == null)}"
+                              class="glyphicon glyphicon-hourglass" style="color: #00edff;"></span>
+                    </span>
+                </span>
+            </td>
+        </th:block>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE HTML>
+<!--suppress RequiredAttributes -->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>server1 Dashboard</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css?v=1}"/>
+</head>
+
+<body class="dashboard">
+<!--Wrapper-->
+<div class="wrapper">
+
+<form id="form-submit" action="/" method="post" enctype="multipart/form-data">
+<!--Version and Args-->
+<div class="container">
+    <h1>
+        Regular Inclusion Automaton Checker <a href="https://git.server1.link/akp/regular-inclusion-automata">
+            <img class="icon" th:src="@{/img/gitlab-logo.png}"/>
+        </a>
+    </h1>
+    <p>
+        Upload two automaton files for inclusion checking.
+        Supported formats are
+        <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">.dot</a>
+        and <a href="https://github.com/ondrik/automata-benchmarks/blob/master/vtf/README.md">.vtf</a>, .dot files can be
+        generated randomly.
+
+        The server needs some time to process the request, refresh the page for results.
+    </p>
+    <p>
+        More benchmarks can be found <a href="benchmarks">here</a>.
+    </p>
+    <hr/>
+    <!--hidden inverse input-->
+    <input type="hidden" name="inverse" value="true" id="input-inverse"/>
+
+    <!--Version Select-->
+    <div class="col-lg-6">
+        <div class="input-group custom-group">
+            <span class="input-group-addon"> Checker </span>
+            <select class="form-control custom-select" name="version">
+                <option value="riac_v1">Riac V1</option>
+            </select>
+        </div>
+    </div>
+    <!--Version Select-->
+
+    <!--Args Input-->
+    <div class="col-lg-6">
+        <div class="input-group">
+            <span class="input-group-addon"> Args </span>
+            <input type="text" name="args" class="form-control" placeholder="args..."/>
+
+            <!--Help Button-->
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#args-modal">
+                    <span class="glyphicon glyphicon-question-sign"></span>
+                </button>
+            </span>
+            <!--Help Button-->
+
+        </div>
+    </div>
+    <!--Args Input-->
+
+</div>
+<!--Version and Args-->
+
+<!--Upload Automata A and B-->
+<div class="container">
+
+    <!--Upload Automaton A-->
+    <div class="col-lg-12">
+        <div id="file-a" class="input-group" th:classappend="${automatonAError} ? error : noop">
+
+            <!--Description-->
+            <span class="input-group-addon"> A </span>
+
+            <!--Upload Text Field-->
+            <input type="text" id="file-name-a" th:value="${automatonA}" name="automatonA" readonly="readonly" class="form-control" placeholder="upload .dot or .vtf file..."/>
+
+            <!--Button Group-->
+            <span class="input-group-btn">
+
+                <!--Upload Button-->
+                <label class="btn btn-default" for="file-selector-a">
+                    <input id="file-selector-a" type="file" name="aFile" style="display:none"
+                        onchange="$('#upload-file').val(this.files[0].name)"/>
+                    <span class="glyphicon glyphicon-open"></span>
+                </label>
+
+                <!--Download Button-->
+                <a id="download-a" class="btn btn-default" th:classappend="${automatonA} ? noop : disabled" th:href="'automaton/'+${automatonA}" type="button" >
+                    <span class="glyphicon glyphicon-save"></span></a>
+
+                <!--Generate Random Automaton Button-->
+                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#generate-a-modal"><span class="glyphicon glyphicon-random"></span></button>
+
+            </span>
+            <!--Button Group-->
+
+        </div>
+    </div>
+    <!--Upload Automaton A-->
+
+    <!--Upload Automaton B-->
+    <div class="col-lg-12">
+        <div id="file-b" class="input-group" th:classappend="${automatonBError} ? error : noop">
+
+            <!--Description-->
+            <span class="input-group-addon"> B </span>
+
+            <!--Upload Text Field-->
+            <input type="text" id="file-name-b" th:value="${automatonB}" name="automatonB" readonly="readonly" class="form-control" placeholder="upload .dot or .vtf file..."/>
+
+            <!--Button Group-->
+            <span class="input-group-btn">
+
+                <!--Upload Button-->
+                <label class="btn btn-default" for="file-selector-b">
+                    <input id="file-selector-b" type="file" name="bFile" style="display:none"
+                           onchange="$('#upload-file').val(this.files[0].name)" />
+                    <span class="glyphicon glyphicon-open"></span>
+                </label>
+
+                <!--Download Button-->
+                <a id="download-b" class="btn btn-default" th:classappend="${automatonB} ? noop : disabled" th:href="'automaton/'+${automatonB}" type="button" >
+                    <span class="glyphicon glyphicon-save"></span></a>
+
+                <!--Generate Random Automaton Button-->
+                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#generate-b-modal"><span class="glyphicon glyphicon-random"></span></button>
+
+            </span>
+            <!--Button Group-->
+
+        </div>
+    </div>
+    <!--Upload Automaton B-->
+
+    <!--A included in B-->
+    <div class="col-lg-6">
+        <div class="input-group">
+            <span class="input-group-btn submit">
+                <button type="button" class="btn btn-primary" id="submit-normal">	&#8466;(A) &sube; 	&#8466;(B)?</button>
+            </span>
+        </div>
+    </div>
+
+    <!--B included in A-->
+    <div class="col-lg-6">
+        <div class="input-group">
+            <span class="input-group-btn submit">
+                <button type="button" class="btn btn-primary" id="submit-inverse">	&#8466;(B) &sube; 	&#8466;(A)?</button>
+            </span>
+        </div>
+    </div>
+</div>
+</form>
+<!--Upload Automata A and B-->
+
+<!--Args Help Modal-->
+<div class="modal fade" id="args-modal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Riac Command Line Parameter</h4>
+            </div>
+            <div class="modal-body">
+                <p>There are currently no parameters supported.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--Args Help Modal-->
+
+<!--Generate Random A-->
+<div class="modal fade" id="generate-a-modal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Generate Random A Automaton</h4>
+                <p>
+                    To generate bigger automatons, use the <a href="https://git.server1.link/akp/regular-inclusion-automata#random-automata">application</a>
+                    for generation.
+                </p>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-states">Number of states (1-1000)</label>
+                        <input type="text" class="form-control" id="number-states" placeholder="100"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-final-states">Number of final states (>=0)</label>
+                        <input type="text" class="form-control" id="number-final-states" placeholder="5"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-symbols">Size of the Alphabet (0-5000)</label>
+                        <input type="text" class="form-control" id="number-symbols" placeholder="25"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="connectivity">Chance for 2 nodes to be connected by a transition (0-100)</label>
+                        <input type="text" class="form-control" id="connectivity" placeholder="10"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="use-generator-a">Generate</button>
+                <!--<button type="button" class="btn btn-default" >Download</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--Generate Random A-->
+
+<!--Generate Random B-->
+<div class="modal fade" id="generate-b-modal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Generate Random B Automaton</h4>
+                <p>
+                    To generate bigger automatons, use the <a href="https://git.server1.link/akp/regular-inclusion-automata#random-automata">application</a>
+                    for generation.
+                </p>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-states-b">Number of states (1-1000)</label>
+                        <input type="text" class="form-control" id="number-states-b" placeholder="100"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-final-states-b">Number of final states (>=0)</label>
+                        <input type="text" class="form-control" id="number-final-states-b" placeholder="5"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="number-symbols-b">Size of the Alphabet (0-5000)</label>
+                        <input type="text" class="form-control" id="number-symbols-b" placeholder="25"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="connectivity-b">Chance for 2 nodes to be connected by a transition (0-100)</label>
+                        <input type="text" class="form-control" id="connectivity-b" placeholder="10"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="use-generator-b">Generate</button>
+                <!--<button type="button" class="btn btn-default" >Download</button>-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--Generate Random B-->
+
+<!--Result-->
+<div th:if="${result != null}">
+    <hr/>
+    <h1 th:if="${result == true}">
+        Result:
+        <span th:if="${inverted == true}" class="riac-true">&#8466;(B) &sube; &#8466;(A)</span>
+        <span th:if="${inverted == false}" class="riac-true">&#8466;(A) &sube; &#8466;(B)</span>
+        <span th:text="${elapsed}"></span>
+    </h1>
+    <h1 th:if="${result == false}">
+        Result:
+        <span th:if="${inverted == false}" class="riac-false">&#8466;(A) &nsub; &#8466;(B)</span>
+        <span th:if="${inverted == true}" class="riac-false">&#8466;(B) &nsub; &#8466;(A)</span>
+        <span th:text="${elapsed}"></span>
+    </h1>
+</div>
+<pre th:if="${output != null}" th:utext="${#strings.escapeXml(#strings.listJoin(output,'&lt;br&gt;'))}"></pre>
+<!--Result-->
+
+    <div class="push"></div>
+</div>
+<!--Wrapper-->
+
+<footer class="footer">
+    <div class="bar">
+        <a href="https://git.server1.link/akp/riac-app">
+            <img class="icon" th:src="@{/img/gitlab-logo.png}"/>
+        </a>
+        <a href="https://www.server1.link">
+            <img class="icon" th:src="@{/img/home-logo.png}"/>
+        </a>
+    </div>
+    'Regular Inclusion Automata Checker' is a project of the
+    <a href="https://www.tcs.cs.tu-bs.de/index.html">Concurrency
+    Theory Group</a> (TCS Braunschweig)
+</footer>
+
+</body>
+</html>

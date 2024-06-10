@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>server1 Dashboard</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/benchmarks.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css?v=1}"/>
+
+    <link rel="stylesheet"
+          href="../../resources/static/css/benchmarks.css"
+          th:href="@{/css/benchmarks.css?v1}"/>
+</head>
+
+<!--/*@thymesVar id="infotable" type="link.server1.ag.concurrency.riac.fragment.InfoTable"*/-->
+<!--/*@thymesVar id="set" type="link.server1.ag.concurrency.riac.fragment.BenchmarkSetDescription"*/-->
+<!--/*@thymesVar id="benchmarktable" type="link.server1.ag.concurrency.riac.fragment.BenchmarkTable"*/-->
+<!--/*@thymesVar id="header" type="link.server1.ag.concurrency.riac.fragment.BenchmarkHeader"*/-->
+<body class="dashboard">
+<div class="container" th:fragment="benchmarks(set, infotable, benchmarktable)">
+
+    <!--Benchmark Set Name-->
+    <h1 th:text="${set.name}">Benchmark Set Name</h1>
+
+    <!--Info Table-->
+    <div id="info-table">
+        <div class="info-row">
+            <span class="info-cell info-header">solved</span>
+            <span class="info-cell info-header">t/o</span>
+            <span class="info-cell info-header">mem limit</span>
+            <span class="info-cell info-header">&lt;10s</span>
+            <span class="info-cell info-header">queued</span>
+        </div>
+        <div class="info-row">
+            <span class="info-cell" th:text="${infotable.percentSolved}">100%</span>
+            <span class="info-cell" th:text="${infotable.percentTimeout}">100%</span>
+            <span class="info-cell" th:text="${infotable.percentMemory}">100%</span>
+            <span class="info-cell" th:text="${infotable.percentEasy}">100%</span>
+            <span class="info-cell" th:text="${infotable.percentQueued}">100%</span>
+        </div>
+        <div class="info-row">
+            <span class="info-cell" th:text="${infotable.solved}">100%</span>
+            <span class="info-cell" th:text="${infotable.timeout}">100%</span>
+            <span class="info-cell" th:text="${infotable.memory}">100%</span>
+            <span class="info-cell" th:text="${infotable.easy}">100%</span>
+            <span class="info-cell" th:text="${infotable.queued}">100%</span>
+        </div>
+    </div>
+    <!--Info Table-->
+
+    <table>
+        <!--First Row Headers-->
+        <tr>
+            <th th:text="${benchmarktable.firstHeader}" class="first-header">
+                Top Left Rotated Inclusion Operator
+            </th>
+            <th:block th:each="header: ${benchmarktable.headers}" >
+                <th th:attr="data-header-col=${header.column}" th:text="${header.fullName}" class="top-header">
+                    File names
+                </th>
+            </th:block>
+        </tr>
+        <!--First Row Headers-->
+
+        <th:block th:each="row : ${benchmarktable.rows}">
+            <tr>
+                <th:block th:each="result : ${row}">
+                    <th:block th:replace="~{fragments/resultcell :: cell(${result})}">
+                        result block
+                    </th:block>
+                </th:block>
+            </tr>
+        </th:block>
+    </table>
+
+    <!--Push bottom to allow for magnifying glass-->
+    <div style="margin-bottom: 350px; height: 1px;"></div>
+
+    <!--Initially hidden magnifying glass-->
+    <div th:replace="~{fragments/magnifyingglass :: magnifying-glass}">&copy; 2016 The Static Templates</div>
+
+    <!--Detailed Information-->
+    <div class="modal fade" id="detail-modal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Console Output</h4>
+                </div>
+                <div class="modal-body">
+                    <pre id="modal-pre"></pre>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" class="btn btn-default" id="download-a">Download A</a>
+                    <a type="button" class="btn btn-default" id="download-b">Download B</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--Detailed Information-->
+
+    <!--Save benchmark set name in variable-->
+    <script th:utext="'var set = &#34;' + ${set.name}+'&#34;'"></script>
+    <script th:utext="'var prefix = &#34;' + ${set.prefix}+'&#34;'"></script>
+</div>
+
+</body>
+</html>

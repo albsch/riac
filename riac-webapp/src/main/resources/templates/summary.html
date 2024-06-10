@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<!--suppress RequiredAttributes -->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>server1 Dashboard</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+    <script th:src="@{/js/summary.js}"></script>
+
+    <link rel="stylesheet" href="../../resources/static/css/bootstrap.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../resources/static/css/bootstrap-theme.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css?v=1}"/>
+</head>
+
+<body class="dashboard">
+
+<!--/*@thymesVar id="set" type="link.server1.ag.concurrency.riac.fragment.PrefixedBenchmarkSet"*/-->
+<!--Wrapper-->
+<div class="wrapper">
+
+    <h1>
+        <a href="https://github.com/ondrik/automata-benchmarks">ARMC</a> Benchmark Summary
+    </h1>
+
+    <ul>
+            <th:block th:each="set:${sets}">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                <li th:text="${set.prefix}">Prefix</li>
+                <ul class="list-unstyled">
+                    <th:block th:each="benchmark:${set.getBenchmarks()}">
+                        <li>
+                            <progress max="100" value="0"
+                                      th:value="${benchmark.solved}"
+                                      th:class="
+                                        (${benchmark.solved le 50} ? 'bad' : '')
+                                        +(${benchmark.solved gt 50 and benchmark.solved le 80} ? 'average' : '')
+                                        +(${benchmark.solved gt 80} ? 'good' : '')"
+                            ></progress>
+                            <a class="compare-link" th:href="'benchmarks/'+${benchmark.name}+'?prefix='+${set.prefix}" th:text="${benchmark.name}"></a>
+                        </li>
+                    </th:block>
+                </ul>
+                </div>
+            </th:block>
+    </ul>
+
+
+    <div class="push"></div>
+</div>
+<!--Wrapper-->
+
+<footer class="footer">
+    <div class="bar">
+        <a href="https://git.server1.link/akp/riac-app">
+            <img class="icon" th:src="@{/img/gitlab-logo.png}"/>
+        </a>
+        <a href="https://www.server1.link">
+            <img class="icon" th:src="@{/img/home-logo.png}"/>
+        </a>
+    </div>
+    'Regular Inclusion Automata Checker' is a project of the
+    <a href="https://www.tcs.cs.tu-bs.de/index.html">Concurrency
+    Theory Group</a> (TCS Braunschweig)
+</footer>
+
+</body>
+</html>

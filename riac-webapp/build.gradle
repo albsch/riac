@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(22)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+}
+
+group = 'link.server1.ag.concurrency'
+version = '0.0.1-SNAPSHOT'
+
+//task deployJar(group: "remote deployment") {
+//	doLast {
+//		println ssh.version
+//		println 'user home: ' + System.properties['user.home']
+//		println 'identity: ' + remotes.localServer.identity
+//		ssh.run {
+//			session(remotes.localServer) {
+//				put from: "${buildDir}/libs/reginc-app-0.0.1-SNAPSHOT.jar", into: '/home/docker/reginc-app/app/app.jar'
+//				put from: "${projectDir}/main_run", into: '/home/docker/reginc-app/app/main_run'
+//				execute 'cd /home/docker/reginc-app && docker-compose restart'
+//			}
+//		}
+//	}
+//}
+
+//task deployResults(group: "remote deployment") {
+//	doLast {
+//		ssh.run {
+//			session(remotes.localServer) {
+//				put from: "${projectDir}/results", into: '/home/docker/reginc-app/app'
+//			}
+//		}
+//	}
+//}

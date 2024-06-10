@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body { background: #2f2f2f; }
+        h2 { text-align: center; color: aliceblue; }
+        h3 { text-align: center; color: aliceblue; }
+        .page { width: 100%; text-align: center; }
+    </style>
+</head>
+<body>
+
+<th:block th:fragment="error-display (status, message)">
+    <th:block th:switch="${status}">
+        <h2 th:case="501">501 - Not Implemented</h2>
+        <h2 th:case="404">404 - Resource Not Found</h2>
+        <h2 th:case="403">403 - Access Denied</h2>
+        <h2 th:case="401">401 - Unauthorized</h2>
+        <h2 th:case="400">400 - Bad Request</h2>
+        <h2 th:case="*" th:text="${status + ' - Error'}">Error</h2>
+    </th:block>
+    <h3 th:text="${message}"></h3>
+</th:block>
+
+</body>
+</html>
