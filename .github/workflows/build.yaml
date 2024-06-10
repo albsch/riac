@@ -13,4 +13,4 @@ jobs:
           distribution: temurin
           java-version: '22'
       - name: Execute gradle build
-        run: cd riac-webapp && ./gradlew build
+        run: cd riac-webapp && ./gradlew build && ./gradlew bootJar
